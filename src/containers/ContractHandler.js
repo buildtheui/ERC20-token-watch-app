@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Erc20Abi from '../utils/ERC-20-abi'
-import { Loading } from '../components/loading'
+import { Loading } from '../components/Loading'
+import TransactionTable from '../components/TransactionTable'
 
 
 class ContractHandler extends Component {
@@ -45,7 +46,7 @@ class ContractHandler extends Component {
   render() {
     let renderComponent = <Loading waitingText="waiting contract address..." />
     if (this.props.address.contractAddress !== '') {
-
+      renderComponent = <TransactionTable />
     }
 
     return (
