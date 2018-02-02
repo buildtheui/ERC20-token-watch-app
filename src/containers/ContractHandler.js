@@ -1,56 +1,93 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Erc20Abi from '../utils/ERC-20-abi'
+import { addBasicInfo } from '../actions/tokenActions'
 import { Loading } from '../components/Loading'
 import TransactionTable from '../components/TransactionTable'
-
+import BasicTokenInfoTable from '../components/BasicTokenInfoTable'
 
 class ContractHandler extends Component {
 
-  componentDidUpdate() {
-    if(this.props.address.contractAddress !== '')
-      this.instantiateContract()
+  componentDidMount() {
+
   }
-  
-  instantiateContract() {
+
+  componentDidUpdate() {
+    if (this.props.address.contractAddress !== '') { 
+      this.instantiateContract(...this.callContract())
+    }
+  }
+
+  callContract() {
     let ERC20Contract = this.props.web3.eth.contract(Erc20Abi)
     let contractInstance = ERC20Contract.at(this.props.address.contractAddress)
+    return [ ERC20Contract, contractInstance ]
+  }
 
-    console.log(contractInstance)
+  instantiateContract(ERC20Contract, contractInstance) {
 
-    /* const simpleStorage = contract(SimpleStorageContract)
-    simpleStorage.setProvider(this.props.web3.currentProvider)
-
-    // Declaring this for later so we can chain functions on SimpleStorage.
-    var simpleStorageInstance
-
-    // Get accounts.
     this.props.web3.eth.getAccounts((error, accounts) => {
-      console.log(accounts)
-      simpleStorage.deployed().then((instance) => {
-        console.log(instance)
-        simpleStorageInstance = instance
 
-        // Stores a given value, 5 by default.
-        return simpleStorageInstance.set(5, {from: accounts[0]})
-      }).then((result) => {
-        // Get the value from the contract to prove it worked.
-        return simpleStorageInstance.get.call(accounts[0])
-      }).then((result) => {        
-        // Update state with the result.
-        return this.setState({ storageValue: result.c[0] })
+      let symbol = new Promise((resolve, reject) => {
+        contractInstance.symbol
+          .call({ from: accounts[0] }, function (error, result) {
+            resolve({ Symbol: result })
+          })
       })
-    }) */
+
+      let totalSupply = new Promise((resolve, reject) => {
+        contractInstance.totalSupply
+          .call({ from: accounts[0] }, function (error, result) {
+            resolve({ TotalSupply: result.c[0] })
+          })
+      })
+
+      let name = new Promise((resolve, reject) => {
+        contractInstance.name
+          .call({ from: accounts[0] }, function (error, result) {
+            resolve({ CoinName: result })
+          })
+      })
+
+      let version = new Promise((resolve, reject) => {
+        contractInstance.version
+          .call({ from: accounts[0] }, function (error, result) {
+            resolve({ Version: result })
+          })
+      })
+
+      Promise.all([symbol, totalSupply, name, version]).then((tokenBasicInfo) => {
+        let tokenInfo = {}
+        tokenBasicInfo.forEach((token) => {
+          let key = Object.keys(token)[0]
+          tokenInfo[key] = token[key]
+        })
+        
+        if (!this.props.basicTokenInfo.hasOwnProperty("CoinName")){
+          this.props.setTokenBasicInfo(tokenInfo)
+        }          
+          
+      })
+    })
   }
 
   render() {
-    let renderComponent = <Loading waitingText="waiting contract address..." />
-    if (this.props.address.contractAddress !== '') {
-      renderComponent = <TransactionTable />
+    let renderComponent = (<Loading waitingText="waiting contract address..." />)
+    if (this.props.address.contractAddress !== '') {    
+      renderComponent = (
+        <div className="row">
+          <div className="col-md-4 ml-4">
+            <BasicTokenInfoTable info={this.props.basicTokenInfo} />
+          </div>
+          <div className="col-md-6">
+            <TransactionTable />
+          </div>          
+        </div>
+      )
     }
 
     return (
-      <div className="row">
+      <div>
         {renderComponent}
       </div>
     )
@@ -61,12 +98,17 @@ class ContractHandler extends Component {
 const mapStateToProps = (state, props) => {
   return {
     web3: state.web3.web3Instance,
-    address: state.contractAddress
+    address: state.tokenReducer,
+    basicTokenInfo: state.tokenReducer.basicTokenInfo
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return {}
+  return {
+    setTokenBasicInfo: (basicInfo) => {
+      dispatch(addBasicInfo(basicInfo))
+    }
+  }
 }
 
 const ContractHandlerContainer = connect(

@@ -24,7 +24,7 @@ document.getElementById('root').innerHTML = '<div class="center-loading">' +
   '</div >'
 
 // Initialize web3 and set in Redux.
-let renderComponent = <h1>No se puede encontrar conexión con algún nodo..</h1>
+let renderComponent = ''
 
 getWeb3
   .then(results => {
@@ -33,6 +33,7 @@ getWeb3
     console.log('Web3 initialized!')
   })
   .catch(() => {
+    renderComponent = <h3>Conection not found... please verify the local or public node connection</h3>
     renderAppAfterWeb3(renderComponent)
     console.log('Error in web3 initialization.')
   })
