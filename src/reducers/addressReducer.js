@@ -6,7 +6,7 @@ const addressReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'ADD_ADDRESS':
       state = Object.assign({}, state, {
-        contractAddress: action.payload.contractAddress
+        contractAddress: action.payload
       })
 
       break;

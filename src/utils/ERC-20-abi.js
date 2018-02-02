@@ -1,5 +1,4 @@
-export default function () {
-  return [
+export default [
     {
       "constant": true,
       "inputs": [],
@@ -270,5 +269,4 @@ export default function () {
       "name": "Approval",
       "type": "event"
     },
-  ]
-}
+]
