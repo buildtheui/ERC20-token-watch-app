@@ -5,7 +5,13 @@ import store from './store'
 import App from './containers/App'
 import getWeb3 from './utils/getWeb3'
 
+// CSS Imports
 import './assets/css/loading.min.css'
+import './assets/css/oswald.css'
+import './assets/css/open-sans.css'
+import './assets/css/pure-min.css'
+import './assets/css/App.css'
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 // loading while web3 is initialized
 document.getElementById('root').innerHTML = '<div class="center-loading">' +
