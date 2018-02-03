@@ -27,7 +27,7 @@ class SearchAddress extends Component {
       this.setState({ address: instance.address })
     })
     .catch((err) => {
-      console.log(err)
+      console.log('deploying without local node')
     })
   }
 

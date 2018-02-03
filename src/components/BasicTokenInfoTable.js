@@ -1,7 +1,6 @@
 import React from "react";
 
 const BasicTokenInfoTable = (props) => {
-  console.log(props.info)
   return (
     <table className="table table-striped mt-5">
       <thead>
@@ -22,10 +21,6 @@ const BasicTokenInfoTable = (props) => {
         <tr>
           <th scope="row">Total Supply</th>
           <td>{props.info.TotalSupply}</td>
-        </tr>
-        <tr>
-          <th scope="row">Version</th>
-          <td>{props.info.Version}</td>
         </tr>
       </tbody>
     </table>

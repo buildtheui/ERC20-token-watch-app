@@ -1,6 +1,7 @@
 const initialState = {
   contractAddress: '',
-  basicTokenInfo: {}
+  basicTokenInfo: {},
+  transferEvents: []
 }
 
 const tokenReducer = (state = initialState, action) => {
@@ -13,6 +14,11 @@ const tokenReducer = (state = initialState, action) => {
     case 'ADD_BASIC_INFO':
       state = Object.assign({}, state, {
         basicTokenInfo: action.payload
+      })
+      break;
+    case 'ADD_TRANSFER_EVENT':
+      state = Object.assign({}, state, {
+        transferEvents: action.payload
       })
 
       break;

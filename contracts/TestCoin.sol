@@ -19,7 +19,7 @@ contract TestCoin {
 
   // Constructor
   function TestCoin() {
-    balances[msg.sender] = 1000000000;
+    balances[msg.sender] = 100;
     totalSupply = 1000000000;
     name = "TestCoin";
     decimals = 18;
@@ -38,7 +38,6 @@ contract TestCoin {
 
   function transfer(address _to, uint256 _value) public returns (bool success) {
     require(balances[msg.sender] < _value);
-    require(balances[_to] + _value < balances[_to]);
     balances[msg.sender] -= _value;
     balances[_to] += _value;
     Transfer(msg.sender, _to, _value);
