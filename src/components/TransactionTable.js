@@ -10,18 +10,14 @@ const TransactionTable = (props) => {
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td>Mark</td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Jacob</td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td>Larry</td>
-        </tr>
+      {props.transactions.map((trans, index) => {
+        return (
+          <tr key={index}>
+            <th scope="row">{trans._value.c[0]}</th>
+            <td>{trans._to}</td>
+          </tr>
+        )
+      })}
       </tbody>
     </table>
   )

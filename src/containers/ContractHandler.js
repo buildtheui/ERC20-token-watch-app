@@ -11,8 +11,7 @@ class ContractHandler extends Component {
 
   componentDidUpdate() {
     if (this.props.address.contractAddress !== '') {
-      this.instantiateContract(...this.callContract())
-      this.observeTransactions(...this.callContract())
+      this.instantiateContract(...this.callContract())      
     }
   }
 
@@ -22,13 +21,11 @@ class ContractHandler extends Component {
     return [ERC20Contract, contractInstance]
   }
 
-  observeTransactions(ERC20Contract, contractInstance) {
-    
+  observeTransactions(ERC20Contract, contractInstance) {    
     const filter = contractInstance.Transfer()
 
     filter.watch((error, result) => {
-      console.log('hola', this.props.transferEvents)
-        this.props.setTransferEvent([result.args])      
+      this.props.setTransferEvent([...this.props.transferEvents, result.args])      
     })
 
   }
@@ -57,7 +54,7 @@ class ContractHandler extends Component {
             resolve((error) ? 'not defined' : { CoinName: result })
           })
       })
-
+      
       Promise.all([symbol, totalSupply, name]).then((tokenBasicInfo) => {
         let tokenInfo = {}
         tokenBasicInfo.forEach((token) => {
@@ -67,6 +64,7 @@ class ContractHandler extends Component {
 
         if (!this.props.basicTokenInfo.hasOwnProperty("CoinName")) {
           this.props.setTokenBasicInfo(tokenInfo)
+          this.observeTransactions(...this.callContract())
         }
 
       })
@@ -82,7 +80,7 @@ class ContractHandler extends Component {
             <BasicTokenInfoTable info={this.props.basicTokenInfo} />
           </div>
           <div className="col-md-6">
-            <TransactionTable />
+            <TransactionTable transactions={this.props.transferEvents} />
           </div>
         </div>
       )
